@@ -2,7 +2,7 @@
 
 shopt -s globstar nullglob extglob
 
-for f in **/*.@(HEAD); do
+for f in **/*.@(js); do
   cat "./LICENSE.HEAD" $f > $f.new
   mv $f.new $f
 done
