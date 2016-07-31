@@ -22,6 +22,7 @@ fs.readdirSync(path.join(__dirname, 'examples')).forEach(function (file) {
 html.push('</ul>');
 html = html.join('');
 
+//fs.writeFile('index.html',html);
 
 app.use(express.static(__dirname));
 
