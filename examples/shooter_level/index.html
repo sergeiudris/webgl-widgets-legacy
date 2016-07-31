@@ -1,0 +1,87 @@
+/**
+ * Webgl widgets legacy code (http://serge-joggen.github.io/webgl-widgets-legacy)
+ *
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.txt file in the root directory of this source tree.
+ */
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <title>WebGL 001</title>
+   <style>
+	body {
+	position:relative;
+	/*background-color: red;*/
+		display: flex;
+		flex-direction: column;
+		overflow: scroll;
+	}
+	
+	canvas {
+	position:relative;
+	margin: 10px;
+	border: 2px solid red;
+	
+	flex: 1 1 auto;
+	height: 300px;
+
+
+	}
+     #loadingtext {
+        position:absolute;
+        top:250px;
+        left:150px;
+        font-size:2em;
+        color: white;
+    }
+	
+  </style>
+</head>
+<body>
+
+   <canvas id="canvas"></canvas>
+     <div id="loadingtext">Loading world...</div>
+    <br/>
+Use the cursor keys or WASD to run around, and <code>Page Up</code>/<code>Page Down</code> to
+look up and down.
+
+<br/>
+  
+  <script id="shader-fs" type="x-shader/x-fragment">
+  precision mediump float;
+
+    varying vec2 vTextureCoord;
+
+    uniform sampler2D uSampler;
+
+    void main(void) {
+        gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+    }
+  
+</script>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+   attribute vec3 aVertexPosition;
+    attribute vec2 aTextureCoord;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    varying vec2 vTextureCoord;
+
+    void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        vTextureCoord = aTextureCoord;
+    }
+</script>
+
+
+  <script type="text/javascript" src="./glMatrix-0.9.5.min.js"></script>
+  
+ 
+  <script type="text/javascript" src="./main.js"></script>
+
+</body>
+</html>

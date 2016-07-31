@@ -1,0 +1,31 @@
+/**
+ * Webgl widgets legacy code (http://serge-joggen.github.io/webgl-widgets-legacy)
+ *
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.txt file in the root directory of this source tree.
+ */
+
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    <meta charset='utf-8'/>
+      <title>lesson 16</title>
+       
+    
+  </head>
+  <body style="margin:0px; text-align:center;" onload="main()">
+         <div id="fps_counter" style="position: absolute; z-index: 1000; display: block; top: 10px; left: 10px; width: 80px; text-align: center; height: 20px; background-color: white;" >FPS</div>
+       <canvas id="canvas" style="position: relative; background-color:rgba(0,0,255,0.05); border:2px solid cornflowerblue; margin:10px;"></canvas>
+    
+      <textarea id="vs" rows="10" cols="110" style="position: relative; display:block;margin:10px auto 10px auto;"></textarea>
+      <textarea id="fs" rows="10" cols="110"  style="position: relative; display:block;margin:10px auto 10px auto;"></textarea>
+
+        <script type="text/javascript" src="../lib.js"></script>
+      <script type="text/javascript" src="../shadering.js"></script>
+	  <script type="text/javascript" src="./quad.js"></script>
+      <script type="text/javascript" src="./main.js"></script>
+  </body>
+</html>

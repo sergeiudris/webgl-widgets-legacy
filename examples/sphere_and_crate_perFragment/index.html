@@ -1,0 +1,228 @@
+/**
+ * Webgl widgets legacy code (http://serge-joggen.github.io/webgl-widgets-legacy)
+ *
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.txt file in the root directory of this source tree.
+ */
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <title>Moon and Crate</title>
+   <style>
+	body {
+	position:relative;
+	/*background-color: red;*/
+		display: flex;
+		flex-direction: column;
+		overflow: scroll;
+	}
+	
+	canvas {
+	position:relative;
+	margin: 10px;
+	border: 2px solid red;
+	
+	flex: 1 1 auto;
+	height: auto;
+
+
+	}
+      .wrapper {
+       display: flex;
+       flex-direction: column;
+       }
+       .input-wrapper {
+           margin: 0px 0px 10px 0px;
+            flex: 1 1 auto;
+           display:flex;
+           flex-direction:row;
+       }
+       input {
+           margin:0px 8px 0px 8px;
+       max-width:40px;
+       text-align:center;
+       }
+	
+	#canvas {
+		height: 500px;
+	}
+  </style>
+</head>
+<body>
+   <canvas id="canvas"></canvas>
+   <div class="wrapper">
+        <div class="input-wrapper">
+            <input type="checkbox" id="lighting">
+            <label>lighting</label>
+            <input type="checkbox" id="blending">
+            <label>blending</label>
+             <input type="checkbox" id="perFragment">
+            <label>per-fragment</label>
+               <input type="checkbox" id="textures">
+            <label>textures</label>
+        </div>
+        <div class="input-wrapper">
+            <label>alpha: </label>
+            <input id="alpha" type="text">
+        </div>
+        <div class="input-wrapper">
+            <label>ambientR: </label>
+            <input id="ambientR" type="text"> 
+            <label>ambientG: </label>
+            <input id="ambientG" type="text">
+            <label>ambientB: </label>
+            <input id="ambientB" type="text">
+        </div>
+        <div class="input-wrapper">
+            <label>lightPositionX: </label>
+            <input id="lightPositionX" type="text">
+            <label>lightPositionY: </label>
+            <input id="lightPositionY" type="text">
+            <label>lightPositionZ: </label>
+            <input id="lightPositionZ" type="text">
+        </div>
+        <div class="input-wrapper">
+            <label>pointLightingR: </label>
+            <input id="pointLightingR" type="text">
+            <label>pointLightingG: </label>
+            <input id="pointLightingG" type="text">
+            <label>pointLightingB: </label>
+            <input id="pointLightingB" type="text">
+        </div>
+    </div>
+
+  <textarea id="txtarea"></textarea>
+
+
+    <script id="per-vertex-lighting-fs" type="x-shader/x-fragment">
+  precision mediump float;
+
+   varying vec2 vTextureCoord; 
+   varying vec3 vLightWeighting;
+   
+	uniform float uAlpha;
+    uniform sampler2D uSampler;
+
+        uniform bool uUseTextures;
+    
+  
+  void main(void) {
+  vec4 fragmentColor;
+        if(uUseTextures){
+        fragmentColor =  texture2D(uSampler, vec2(vTextureCoord.s,vTextureCoord.t));
+        }else{
+            fragmentColor = vec4(1.0,1.0,1.0,1.0);
+        }
+        gl_FragColor = vec4(fragmentColor.rgb * vLightWeighting,fragmentColor.a*uAlpha); // vec4(1.0, 1.0, 1.0, 1.0);
+  }
+</script>
+<script id="per-vertex-lighting-vs" type="x-shader/x-vertex">
+  attribute vec3 aVertexPosition; // vary from vertex to vertex
+  attribute vec3 aVertexNormal;
+  attribute vec2 aTextureCoord;
+
+  uniform mat4 uMVMatrix; // global
+  uniform mat4 uPMatrix;
+  uniform mat3 uNMatrix;
+  
+  uniform vec3 uAmbientColor;
+  
+  uniform vec3 uPointLightingLocation;
+  uniform vec3 uPointLightingColor;
+  
+  uniform bool uUseLighting;
+  
+  
+  varying vec2 vTextureCoord; // 
+  varying vec3 vLightWeighting;
+
+  void main(void) {
+    vec4 mvPosition = uMVMatrix* vec4(aVertexPosition, 1.0);
+    gl_Position = uPMatrix * mvPosition;
+
+	gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0); // implicitly a vrying variable
+	vTextureCoord = aTextureCoord; // just pass it straight through
+	
+	if(!uUseLighting){
+	vLightWeighting = vec3(1.0,1.0,1.0);
+	}else{
+    vec3 lightDirection = normalize(uPointLightingLocation - mvPosition.xyz);
+	vec3 transformedNormal = uNMatrix* aVertexNormal;
+	float directionalLightWeighting = max(dot(transformedNormal, lightDirection),0.0);
+	vLightWeighting = uAmbientColor+ uPointLightingColor* directionalLightWeighting;
+	}
+  
+    
+  }
+</script>
+
+<script id="per-fragment-lighting-fs" type="x-shader/x-fragment">
+  precision mediump float;
+
+   varying vec2 vTextureCoord; 
+   varying vec4 vPosition;
+    varying vec3 vTransformedNormal;
+   
+    uniform bool uUseLighting;
+    uniform bool uUseTextures;
+
+    uniform vec3 uAmbientColor;
+
+    uniform vec3 uPointLightingLocation;
+    uniform vec3 uPointLightingColor;
+
+	uniform float uAlpha;
+    uniform sampler2D uSampler;
+  
+  void main(void) {
+    vec3 lightWeighting;
+    if(!uUseLighting){
+    lightWeighting = vec3(1.0,1.0,1.0);
+    }else{
+    vec3 lightDirection = normalize(uPointLightingLocation - vPosition.xyz);
+
+    float directionalLightWeighting = max(dot(normalize(vTransformedNormal),lightDirection), 0.0);
+      lightWeighting = uAmbientColor + uPointLightingColor * directionalLightWeighting;
+    }
+
+    vec4 fragmentColor;
+    if(uUseTextures){
+        fragmentColor = texture2D(uSampler, vec2(vTextureCoord.s,vTextureCoord.t));
+    }else{
+        fragmentColor = vec4(1.0,1.0,1.0,1.0);
+    }
+    gl_FragColor = vec4(fragmentColor.rgb * lightWeighting,fragmentColor.a*uAlpha); 
+  }
+</script>
+<script id="per-fragment-lighting-vs" type="x-shader/x-vertex">
+  attribute vec3 aVertexPosition; // vary from vertex to vertex
+  attribute vec3 aVertexNormal;
+  attribute vec2 aTextureCoord;
+
+  uniform mat4 uMVMatrix; // global
+  uniform mat4 uPMatrix;
+  uniform mat3 uNMatrix;
+  
+    varying vec2 vTextureCoord;
+    varying vec3 vTransformedNormal;
+    varying vec4 vPosition;
+
+    void main(void){
+    vPosition  = uMVMatrix * vec4(aVertexPosition, 1.0);
+    gl_Position = uPMatrix * vPosition;
+    vTextureCoord = aTextureCoord;
+    vTransformedNormal = uNMatrix * aVertexNormal;
+    }
+
+
+  
+</script>
+
+  
+  <script type="text/javascript" src="./glMatrix-0.9.5.min.js"></script>
+  <script type="text/javascript" src="./main.js"></script>
+
+</body>
+</html>
