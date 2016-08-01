@@ -1,5 +1,9 @@
 #!/bin/bash
 
+
+
+
+
 shopt -s globstar nullglob extglob
 
 for f in **/*.@(js); do
