@@ -54,7 +54,7 @@ var CANVAS,
     FPSTime = 0,
     FPSFrames = 0,
     domCounter = document.getElementById("fps_counter")
-        ;
+    ;
 
 function main() {
     console.log("main");
@@ -64,7 +64,7 @@ function main() {
 
 function start() {
     console.log("entered start");
-   
+
 
     CANVAS = document.getElementById("canvas");
 
@@ -72,28 +72,32 @@ function start() {
     CANVAS.height = CANVAS.clientHeight;
 
     addEventListeners(CANVAS);
-   
+
 
     pMatrix = Lib.getProjection4(40, CANVAS.width / CANVAS.height, 1, 100);
     mMatrix = Lib.getIdentity4();
     vMatrix = Lib.getIdentity4();
-    
-  
-    
+
+
+
     initGL();
-    dragonTexture = loadTexture(THIS_FOLDER_PATH+"/dragon.png");
-    backgroundImage = loadTexture(THIS_FOLDER_PATH+"/background.png");
 
-    initProgram();
-   
-    createWorld();
-    Lib.translateZ4(vMatrix, -20);
-    Lib.translateY4(vMatrix, -4);
+    Promise.all([
+        loadTexture(THIS_FOLDER_PATH + "/dragon.png"),
+        loadTexture(THIS_FOLDER_PATH + "/background.png")
+    ]).then(function (imgs) {
+        dragonTexture = imgs[0];
+        backgroundImage = imgs[1];
+        initProgram();
 
-  
+        createWorld();
+        Lib.translateZ4(vMatrix, -20);
+        Lib.translateY4(vMatrix, -4);
+        drawScene();
+
+    })
 
 
-    drawScene();
 };
 
 function drawScene(time) {
@@ -111,7 +115,7 @@ function drawScene(time) {
     GL.useProgram(backgroundProgram);
     GL.uniform1i(backgroundProgram.uSampler, 0);
     GL.enableVertexAttribArray(backgroundProgram.aVertexPosition);
-   
+
 
     if (backgroundImage.webglTexture) {
         GL.activeTexture(GL.TEXTURE0);
@@ -121,29 +125,29 @@ function drawScene(time) {
 
     GL.disableVertexAttribArray(backgroundProgram.aVertexPosition);
     GL.useProgram(program);
-   
+
 
     GL.enableVertexAttribArray(program.aUV);
     GL.enableVertexAttribArray(program.aNormalPosition);
     GL.enableVertexAttribArray(program.aVertexPosition);
 
-    pushMatrix(mMatrix,"m");
+    pushMatrix(mMatrix, "m");
     animate();
-    
+
     GL.uniform1i(program.uSampler, 0);
     GL.uniformMatrix4fv(program.uPMatrix, false, pMatrix);
     GL.uniformMatrix4fv(program.uVMatrix, false, vMatrix);
     GL.uniformMatrix4fv(program.uMMatrix, false, mMatrix);
 
-    
+
     if (dragonTexture.webglTexture) {
         GL.activeTexture(GL.TEXTURE0);
         GL.bindTexture(GL.TEXTURE_2D, dragonTexture.webglTexture);
     }
-    
+
 
     dragon.draw(GL, program);
-   
+
     popMatrix("m");
 
     GL.flush();
@@ -161,12 +165,12 @@ function animate() {
     var dt;
     dt = timeNow - lastTime;
     if (lastTime != 0) {
-     
+
 
         //Lib.rotateX4(mMatrix, dt * 0.0003);
         //Lib.rotateZ4(mMatrix, dt * 0.0005);
         //Lib.rotateY4(mMatrix, dt * 0.0004);
-    
+
         Lib.rotateX4(mMatrix, PHI);
         Lib.rotateY4(mMatrix, THETA);
     }
@@ -174,37 +178,37 @@ function animate() {
     FPSTime += dt;
     FPSFrames++;
     if (FPSTime > 1000) {
-        
+
         var fps = 1000 * FPSFrames / FPSTime;
 
         domCounter.innerHTML = Math.round(fps) + " FPS";
 
         FPSTime = FPSFrames = 0;
-       
+
     }
 
 };
 
 function initGL() {
-    try{
+    try {
         GL = CANVAS.getContext("webgl", { antialias: true }) || CANVAS.getContext("experimental-webgl", { antialias: false });
 
         EXT = GL.getExtension("OES_element_index_uint") ||
-        GL.getExtension("MOZ_OES_element_index_uint") ||
-        GL.getExtension("WEBKIT_OES_element_index_uint");
+            GL.getExtension("MOZ_OES_element_index_uint") ||
+            GL.getExtension("WEBKIT_OES_element_index_uint");
 
-        GL.viewport(0.0, 0.0, CANVAS.width, CANVAS.height); 
+        GL.viewport(0.0, 0.0, CANVAS.width, CANVAS.height);
 
         GL.clearColor(0.0, 0.0, 0.0, 1.0);
-       // GL.enable(GL.DEPTH_TEST);
+        // GL.enable(GL.DEPTH_TEST);
         GL.depthFunc(GL.LEQUAL);
         GL.clearDepth(1.0);
         GL.enable(GL.BLEND);
-       // GL.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
+        // GL.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
         GL.blendFunc(GL.SRC_ALPHA, GL.ONE);
         GL.enable(GL.CULL_FACE);
         GL.frontFace(GL.CCW);
-      
+
     } catch (e) {
         alert("You are not webgl compatible :(");
         return false;
@@ -223,35 +227,35 @@ function loadResources(callback) {
     console.log("loading shaders...");
     var countResources = 0; //will be kept cause it'll be closure
     var target = 5;
-    Utils.loadFile(THIS_FOLDER_PATH+"/vertex.shader", function (xmlhttp) {
-        shaderVertexSource =  xmlhttp.responseText;
+    Utils.loadFile(THIS_FOLDER_PATH + "/vertex.shader", function (xmlhttp) {
+        shaderVertexSource = xmlhttp.responseText;
         countResources += 1; //closure created
         if (countResources == target) {
             callback();
         }
     });
-    Utils.loadFile(THIS_FOLDER_PATH+"/fragment.shader", function (xmlhttp) {
+    Utils.loadFile(THIS_FOLDER_PATH + "/fragment.shader", function (xmlhttp) {
         shaderFragmentSource = xmlhttp.responseText;
         countResources += 1;
         if (countResources == target) {
             callback();
         }
     });
-    Utils.loadFile(THIS_FOLDER_PATH+"/dragonx.json", function (xmlhttp) {
+    Utils.loadFile(THIS_FOLDER_PATH + "/dragonx.json", function (xmlhttp) {
         dragonJSONObject = JSON.parse(xmlhttp.responseText);
         countResources += 1;
         if (countResources == target) {
             callback();
         }
     });
-    Utils.loadFile(THIS_FOLDER_PATH+"/v.shader", function (xmlhttp) {
+    Utils.loadFile(THIS_FOLDER_PATH + "/v.shader", function (xmlhttp) {
         vSource = xmlhttp.responseText;
         countResources += 1; //closure created
         if (countResources == target) {
             callback();
         }
     });
-    Utils.loadFile(THIS_FOLDER_PATH+"/f.shader", function (xmlhttp) {
+    Utils.loadFile(THIS_FOLDER_PATH + "/f.shader", function (xmlhttp) {
         fSource = xmlhttp.responseText;
         countResources += 1;
         if (countResources == target) {
@@ -264,21 +268,24 @@ function loadResources(callback) {
 
 function loadTexture(url) {
 
-    var image = new Image();
+    return new Promise(function (resolve, reject) {
+        var image = new Image();
 
-    image.src = url;
-    image.webglTexture = null;
-    image.onload = function (e) {
-        var texture = GL.createTexture();
-        GL.pixelStorei(GL.UNPACK_FLIP_Y_WEBGL, true);
-        GL.bindTexture(GL.TEXTURE_2D, texture);
-        GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, image);
-        GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR_MIPMAP_NEAREST);
-        GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST_MIPMAP_NEAREST);
-        GL.generateMipmap(GL.TEXTURE_2D);
-        image.webglTexture = texture;
-    }
-    return image;
+        image.src = url;
+        image.webglTexture = null;
+        image.onload = function (e) {
+            var texture = GL.createTexture();
+            GL.pixelStorei(GL.UNPACK_FLIP_Y_WEBGL, true);
+            GL.bindTexture(GL.TEXTURE_2D, texture);
+            GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, image);
+            // GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR_MIPMAP_NEAREST);
+            // GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST_MIPMAP_NEAREST);
+            GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
+            GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST_MIPMAP_LINEAR);
+            GL.generateMipmap(GL.TEXTURE_2D);
+            resolve(image);
+        }
+    })
 }
 
 
@@ -302,12 +309,12 @@ function mouseMove(e) {
         return false;
     }
 
-    DELTA.x = (e.clientX - mousePosition.x) * 2 * Math.PI / CANVAS.width/2,
-    DELTA.y = (e.clientY - mousePosition.y) * 2 * Math.PI / CANVAS.height/2
-    ;
+    DELTA.x = (e.clientX - mousePosition.x) * 2 * Math.PI / CANVAS.width / 2,
+        DELTA.y = (e.clientY - mousePosition.y) * 2 * Math.PI / CANVAS.height / 2
+        ;
 
-    THETA += DELTA.x ;
-    PHI += DELTA.y ;
+    THETA += DELTA.x;
+    PHI += DELTA.y;
     mousePosition.x = e.clientX;
     mousePosition.y = e.clientY;
 
@@ -326,7 +333,7 @@ function addEventListeners(el) {
             animationFrameID = -1;
             lastTime = 0;
         } else {
-           //   animationFrameID = requestAnimationFrame(drawScene);
+            //   animationFrameID = requestAnimationFrame(drawScene);
             drawScene();
             console.log("requested animation frame")
         }
@@ -339,7 +346,7 @@ function addEventListeners(el) {
 
 };
 
-function pushMatrix(m,type) {
+function pushMatrix(m, type) {
     var copy = m.slice();
     matrixStack[type].push(copy);
 }

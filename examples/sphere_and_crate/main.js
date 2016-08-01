@@ -8,53 +8,53 @@
 (function (obj) {
 
     var THIS_FOLDER_PATH = ".";
-    
-    
-    var canvas,
-		gl = null,
-		mvMatrix = mat4.create(),
-		mvMatrixStack = [],
-		pMatrix = mat4.create(),
-		shaderProgram,
 
-		moonVertexPositionBuffer,
-		moonVertexIndexBuffer,
-		moonVertexTextureCoordBuffer,
-		moonVertexNormalBuffer,
+
+    var canvas,
+        gl = null,
+        mvMatrix = mat4.create(),
+        mvMatrixStack = [],
+        pMatrix = mat4.create(),
+        shaderProgram,
+
+        moonVertexPositionBuffer,
+        moonVertexIndexBuffer,
+        moonVertexTextureCoordBuffer,
+        moonVertexNormalBuffer,
 
         cubeVertexPositionBuffer,
-		cubeVertexIndexBuffer,
-		cubeVertexTextureCoordBuffer,
-		cubeVertexNormalBuffer,
+        cubeVertexIndexBuffer,
+        cubeVertexTextureCoordBuffer,
+        cubeVertexNormalBuffer,
 
-		rotationDegreesPyramid = 0,// bad practice
-		rotationDegreesCube = 0, // bad practice,
-		lastTime = 0,
-		animationFrameID = -1,
-		neheTexture,
-		xRotation = 0,
-		xSpeed = 0,
-		yRotation = 0,
-		ySpeed = 0,
-		zRotation = 0,
+        rotationDegreesPyramid = 0,// bad practice
+        rotationDegreesCube = 0, // bad practice,
+        lastTime = 0,
+        animationFrameID = -1,
+        neheTexture,
+        xRotation = 0,
+        xSpeed = 0,
+        yRotation = 0,
+        ySpeed = 0,
+        zRotation = 0,
         cubeAngle = 0,
         moonAngle = 180,
         moonTexture,
         crateTexture,
-		z = -20.0,
-		filter = 0, // int varying from 0 to 2 whic filter is used (x,y,z),
-		texturesArr = [],
-		currentlyPressedKeys = {},
-		checkBoxLighting = document.getElementById("lighting"),
-		checkBoxBlending = document.getElementById("blending"),
-		alpha = document.getElementById("alpha"),
-		ambientR = document.getElementById("ambientR"),
+        z = -20.0,
+        filter = 0, // int varying from 0 to 2 whic filter is used (x,y,z),
+        texturesArr = [],
+        currentlyPressedKeys = {},
+        checkBoxLighting = document.getElementById("lighting"),
+        checkBoxBlending = document.getElementById("blending"),
+        alpha = document.getElementById("alpha"),
+        ambientR = document.getElementById("ambientR"),
         ambientG = document.getElementById("ambientG"),
         ambientB = document.getElementById("ambientB"),
-		lightPositionX = document.getElementById("lightPositionX"),
+        lightPositionX = document.getElementById("lightPositionX"),
         lightPositionY = document.getElementById("lightPositionY"),
         lightPositionZ = document.getElementById("lightPositionZ"),
-		pointLightingR = document.getElementById("pointLightingR"),
+        pointLightingR = document.getElementById("pointLightingR"),
         pointLightingG = document.getElementById("pointLightingG"),
         pointLightingB = document.getElementById("pointLightingB"),
 
@@ -82,30 +82,32 @@
         initGL(canvas);
         initShaders();
         initBuffers();
-        initTexture();
-        mat4.identity(moonRotationMatrix);
-        
-        
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
-        gl.enable(gl.DEPTH_TEST);
+        initTexture().then(function (imgs) {
+            mat4.identity(moonRotationMatrix);
 
-        addEventListeners(canvas);
-        document.onkeydown = handleKeyDown;
-        document.onkeyup = handleKeyUp;
-        checkBoxLighting.checked = false;
-        checkBoxBlending.checked = false;
-        alpha.value = "1",
-		ambientR.value = "0.3";
-        ambientG.value = "0.3";
-        ambientB.value = "0.3",
-		lightPositionX.value = "0.0";
-        lightPositionY.value = "0.0";
-        lightPositionZ.value = "-20.0";
-        pointLightingR.value = "0.8";
-        pointLightingG.value = "0.8";
-        pointLightingB.value = "0.8";
 
-        tick();
+            gl.clearColor(0.0, 0.0, 0.0, 1.0);
+            gl.enable(gl.DEPTH_TEST);
+
+            addEventListeners(canvas);
+            document.onkeydown = handleKeyDown;
+            document.onkeyup = handleKeyUp;
+            checkBoxLighting.checked = false;
+            checkBoxBlending.checked = false;
+            alpha.value = "1",
+                ambientR.value = "0.3";
+            ambientG.value = "0.3";
+            ambientB.value = "0.3",
+                lightPositionX.value = "0.0";
+            lightPositionY.value = "0.0";
+            lightPositionZ.value = "-20.0";
+            pointLightingR.value = "0.8";
+            pointLightingG.value = "0.8";
+            pointLightingB.value = "0.8";
+
+            tick();
+        });
+
 
     }
 
@@ -125,41 +127,41 @@
             //source factor, destination factor
             gl.enable(gl.BLEND);
             gl.disable(gl.DEPTH_TEST);
-            gl.uniform1f(shaderProgram.alphaUniform, parseFloat(alpha.value));
         } else {
             gl.disable(gl.BLEND);
             gl.enable(gl.DEPTH_TEST);
         }
+        gl.uniform1f(shaderProgram.alphaUniform, parseFloat(alpha.value));
 
         var lighting = checkBoxLighting.checked;
         gl.uniform1i(shaderProgram.useLightingUniform, lighting);
         if (lighting) {
             gl.uniform3f(
-              shaderProgram.ambientColorUniform,
-              parseFloat(ambientR.value),
-              parseFloat(ambientG.value),
-              parseFloat(ambientB.value)
-              );
+                shaderProgram.ambientColorUniform,
+                parseFloat(ambientR.value),
+                parseFloat(ambientG.value),
+                parseFloat(ambientB.value)
+            );
 
             gl.uniform3f(
                 shaderProgram.pointLightingLocationUniform,
-            parseFloat(lightPositionX.value),
-            parseFloat(lightPositionY.value),
-            parseFloat(lightPositionZ.value)
+                parseFloat(lightPositionX.value),
+                parseFloat(lightPositionY.value),
+                parseFloat(lightPositionZ.value)
             );
-          
+
             gl.uniform3f(
-         shaderProgram.pointLightingColorUniform,
-         parseFloat(pointLightingR.value),
-         parseFloat(pointLightingG.value),
-         parseFloat(pointLightingB.value)
-       );
+                shaderProgram.pointLightingColorUniform,
+                parseFloat(pointLightingR.value),
+                parseFloat(pointLightingG.value),
+                parseFloat(pointLightingB.value)
+            );
 
         }
 
 
         mat4.identity(mvMatrix); //model-view matrix to represent the current move-rotate state
-        
+
         mat4.translate(mvMatrix, [0.0, 0.0, z]); // multiple the given matrix with the paramter matrix
 
         mat4.multiply(mvMatrix, moonRotationMatrix);
@@ -167,7 +169,7 @@
 
 
 
-        
+
         mat4.rotate(mvMatrix, degreesToRadians(xRotation), [1, 0, 0]);
         mat4.rotate(mvMatrix, degreesToRadians(yRotation), [0, 1, 0]);
         //mat4.rotate(mvMatrix, degreesToRadians(zRotation),[0,0,1]);
@@ -224,31 +226,32 @@
 
     }
 
-
-
-
     function initTexture() {
-        var image = new Image()
-		;
-        moonTexture = gl.createTexture();
-        moonTexture.image = image;
-        
-        image.onload = function () {
-            handleLoadedTexture(moonTexture);
-        }
-        image.src = THIS_FOLDER_PATH+"/moon.gif";
 
-        image = new Image();
-        crateTexture = gl.createTexture();
-        crateTexture.image = image;
+        return Promise.all([new Promise(function (resolve, reject) {
+            var image = new Image()
+                ;
+            moonTexture = gl.createTexture();
+            moonTexture.image = image;
 
-        image.onload = function () {
-            handleLoadedTexture(crateTexture);
-        }
-        image.src = THIS_FOLDER_PATH+"/crate.gif";
+            image.onload = function () {
+                handleLoadedTexture(moonTexture);
+                resolve(image);
+            }
+            image.src = THIS_FOLDER_PATH + "/moon.gif";
+        }), new Promise(function (resolve, reject) {
+            var image = new Image();
+            crateTexture = gl.createTexture();
+            crateTexture.image = image;
 
-
+            image.onload = function () {
+                handleLoadedTexture(crateTexture);
+                resolve(image);
+            }
+            image.src = THIS_FOLDER_PATH + "/crate.gif";
+        })]);
     }
+
     function handleLoadedTexture(texture) {
 
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -322,7 +325,7 @@
 
     function initShaders() {
         var fragmentShader = getShader(gl, "shader-fsTexture"),
-			vertexShader = getShader(gl, "shader-vsTexture");
+            vertexShader = getShader(gl, "shader-vsTexture");
 
         shaderProgram = gl.createProgram();
         gl.attachShader(shaderProgram, vertexShader);
@@ -357,10 +360,10 @@
 
     function getShader(gl, id) {
         var shaderScript = document.getElementById(id),
-			str = "",
-			k,
-			shader
-        ;
+            str = "",
+            k,
+            shader
+            ;
 
         if (!shaderScript) {
             return null;
@@ -447,7 +450,7 @@
             }
 
         }
-      
+
         for (var latNumber = 0; latNumber < latitudeBands; latNumber++) {
             for (var longNumber = 0; longNumber < longitudeBands; longNumber++) {
                 var first = (latNumber * (longitudeBands + 1)) + longNumber;
@@ -490,41 +493,41 @@
         cubeVertexPositionBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
         var vertices = [
-		  // Front face
-		  -1.0, -1.0, 1.0,
-		   1.0, -1.0, 1.0,
-		   1.0, 1.0, 1.0,
-		  -1.0, 1.0, 1.0,
+            // Front face
+            -1.0, -1.0, 1.0,
+            1.0, -1.0, 1.0,
+            1.0, 1.0, 1.0,
+            -1.0, 1.0, 1.0,
 
-		  // Back face
-		  -1.0, -1.0, -1.0,
-		  -1.0, 1.0, -1.0,
-		   1.0, 1.0, -1.0,
-		   1.0, -1.0, -1.0,
+            // Back face
+            -1.0, -1.0, -1.0,
+            -1.0, 1.0, -1.0,
+            1.0, 1.0, -1.0,
+            1.0, -1.0, -1.0,
 
-		  // Top face
-		  -1.0, 1.0, -1.0,
-		  -1.0, 1.0, 1.0,
-		   1.0, 1.0, 1.0,
-		   1.0, 1.0, -1.0,
+            // Top face
+            -1.0, 1.0, -1.0,
+            -1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0,
+            1.0, 1.0, -1.0,
 
-		  // Bottom face
-		  -1.0, -1.0, -1.0,
-		   1.0, -1.0, -1.0,
-		   1.0, -1.0, 1.0,
-		  -1.0, -1.0, 1.0,
+            // Bottom face
+            -1.0, -1.0, -1.0,
+            1.0, -1.0, -1.0,
+            1.0, -1.0, 1.0,
+            -1.0, -1.0, 1.0,
 
-		  // Right face
-		   1.0, -1.0, -1.0,
-		   1.0, 1.0, -1.0,
-		   1.0, 1.0, 1.0,
-		   1.0, -1.0, 1.0,
+            // Right face
+            1.0, -1.0, -1.0,
+            1.0, 1.0, -1.0,
+            1.0, 1.0, 1.0,
+            1.0, -1.0, 1.0,
 
-		  // Left face
-		  -1.0, -1.0, -1.0,
-		  -1.0, -1.0, 1.0,
-		  -1.0, 1.0, 1.0,
-		  -1.0, 1.0, -1.0
+            // Left face
+            -1.0, -1.0, -1.0,
+            -1.0, -1.0, 1.0,
+            -1.0, 1.0, 1.0,
+            -1.0, 1.0, -1.0
         ];
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
         cubeVertexPositionBuffer.itemSize = 3;
@@ -533,41 +536,41 @@
         cubeVertexTextureCoordBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexTextureCoordBuffer);
         var textureCoords = [
-      // Front face
-      0.0, 0.0,
-      1.0, 0.0,
-      1.0, 1.0,
-      0.0, 1.0,
+            // Front face
+            0.0, 0.0,
+            1.0, 0.0,
+            1.0, 1.0,
+            0.0, 1.0,
 
-      // Back face
-      1.0, 0.0,
-      1.0, 1.0,
-      0.0, 1.0,
-      0.0, 0.0,
+            // Back face
+            1.0, 0.0,
+            1.0, 1.0,
+            0.0, 1.0,
+            0.0, 0.0,
 
-      // Top face
-      0.0, 1.0,
-      0.0, 0.0,
-      1.0, 0.0,
-      1.0, 1.0,
+            // Top face
+            0.0, 1.0,
+            0.0, 0.0,
+            1.0, 0.0,
+            1.0, 1.0,
 
-      // Bottom face
-      1.0, 1.0,
-      0.0, 1.0,
-      0.0, 0.0,
-      1.0, 0.0,
+            // Bottom face
+            1.0, 1.0,
+            0.0, 1.0,
+            0.0, 0.0,
+            1.0, 0.0,
 
-      // Right face
-      1.0, 0.0,
-      1.0, 1.0,
-      0.0, 1.0,
-      0.0, 0.0,
+            // Right face
+            1.0, 0.0,
+            1.0, 1.0,
+            0.0, 1.0,
+            0.0, 0.0,
 
-      // Left face
-      0.0, 0.0,
-      1.0, 0.0,
-      1.0, 1.0,
-      0.0, 1.0
+            // Left face
+            0.0, 0.0,
+            1.0, 0.0,
+            1.0, 1.0,
+            0.0, 1.0
         ];
 
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
@@ -578,41 +581,41 @@
         cubeVertexNormalBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexNormalBuffer);
         var vertexNormals = [
-          // Front face
-           0.0, 0.0, 1.0,
-           0.0, 0.0, 1.0,
-           0.0, 0.0, 1.0,
-           0.0, 0.0, 1.0,
+            // Front face
+            0.0, 0.0, 1.0,
+            0.0, 0.0, 1.0,
+            0.0, 0.0, 1.0,
+            0.0, 0.0, 1.0,
 
-          // Back face
-           0.0, 0.0, -1.0,
-           0.0, 0.0, -1.0,
-           0.0, 0.0, -1.0,
-           0.0, 0.0, -1.0,
+            // Back face
+            0.0, 0.0, -1.0,
+            0.0, 0.0, -1.0,
+            0.0, 0.0, -1.0,
+            0.0, 0.0, -1.0,
 
-          // Top face
-           0.0, 1.0, 0.0,
-           0.0, 1.0, 0.0,
-           0.0, 1.0, 0.0,
-           0.0, 1.0, 0.0,
+            // Top face
+            0.0, 1.0, 0.0,
+            0.0, 1.0, 0.0,
+            0.0, 1.0, 0.0,
+            0.0, 1.0, 0.0,
 
-          // Bottom face
-           0.0, -1.0, 0.0,
-           0.0, -1.0, 0.0,
-           0.0, -1.0, 0.0,
-           0.0, -1.0, 0.0,
+            // Bottom face
+            0.0, -1.0, 0.0,
+            0.0, -1.0, 0.0,
+            0.0, -1.0, 0.0,
+            0.0, -1.0, 0.0,
 
-          // Right face
-           1.0, 0.0, 0.0,
-           1.0, 0.0, 0.0,
-           1.0, 0.0, 0.0,
-           1.0, 0.0, 0.0,
+            // Right face
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
 
-          // Left face
-          -1.0, 0.0, 0.0,
-          -1.0, 0.0, 0.0,
-          -1.0, 0.0, 0.0,
-          -1.0, 0.0, 0.0,
+            // Left face
+            -1.0, 0.0, 0.0,
+            -1.0, 0.0, 0.0,
+            -1.0, 0.0, 0.0,
+            -1.0, 0.0, 0.0,
         ];
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
         cubeVertexNormalBuffer.itemSize = 3;
@@ -623,17 +626,17 @@
         cubeVertexIndexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
         var cubeVertexIndices = [
-		  0, 1, 2, 0, 2, 3,    // Front face
-		  4, 5, 6, 4, 6, 7,    // Back face
-		  8, 9, 10, 8, 10, 11,  // Top face
-		  12, 13, 14, 12, 14, 15, // Bottom face
-		  16, 17, 18, 16, 18, 19, // Right face
-		  20, 21, 22, 20, 22, 23  // Left face
+            0, 1, 2, 0, 2, 3,    // Front face
+            4, 5, 6, 4, 6, 7,    // Back face
+            8, 9, 10, 8, 10, 11,  // Top face
+            12, 13, 14, 12, 14, 15, // Bottom face
+            16, 17, 18, 16, 18, 19, // Right face
+            20, 21, 22, 20, 22, 23  // Left face
         ]
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), gl.STATIC_DRAW);
         cubeVertexIndexBuffer.itemSize = 1;
         cubeVertexIndexBuffer.numItems = 36;
-        
+
 
     }
 
@@ -675,20 +678,21 @@
 
     function addEventListeners(target) {
         target.addEventListener("dblclick",
-		function (e) {
+            function (e) {
 
-		    if (animationFrameID != -1) {
-		        console.log("cancel")
-		        cancelAnimationFrame(animationFrameID);
-		        animationFrameID = -1;
-		        lastTime = 0;
-		    } else {7
-		        console.log("request")
-		        animationFrameID = requestAnimationFrame(tick);
-		    }
-		    console.log(animationFrameID);
-		},
-		false);
+                if (animationFrameID != -1) {
+                    console.log("cancel")
+                    cancelAnimationFrame(animationFrameID);
+                    animationFrameID = -1;
+                    lastTime = 0;
+                } else {
+                    7
+                    console.log("request")
+                    animationFrameID = requestAnimationFrame(tick);
+                }
+                console.log(animationFrameID);
+            },
+            false);
 
         target.addEventListener("mousedown", handleMouseDown, false);
         document.addEventListener("mouseup", handleMouseUp, false);
@@ -717,18 +721,18 @@
     }
 
     function handleMouseDown(event) {
-       
+
         mouseDown = true;
         lastMouseX = event.clientX;
         lastMouseY = event.clientY;
-    } 
+    }
 
 
     function handleMouseUp(event) {
         mouseDown = false;
     }
     function handleMouseMove(event) {
-       
+
         if (!mouseDown) {
             return;
         }

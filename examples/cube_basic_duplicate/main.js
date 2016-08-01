@@ -195,6 +195,7 @@ function initProgram() {
 function loadShaders(callback) {
     console.log("loading shaders...");
     var countShaders = 0; //will be kept cause it'll be closure
+
     Utils.loadFile(THIS_FOLDER_PATH+"/vertex.shader", function (xmlhttp) {
         shaderVertexSource =  xmlhttp.responseText;
         countShaders += 1; //closure created

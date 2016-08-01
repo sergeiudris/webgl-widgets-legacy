@@ -34,3 +34,11 @@ app.listen(port, function () {
     console.log('>app is running on port ' + port + '\n>type   http://127.0.0.1:' + port + '   in your browser to use the application\n>to stop the server: press  ctrl + c');
 });
 
+// var fetch = require('node-fetch');
+
+// fetch('https://en.wikipedia.org/wiki/The_Championships,_Wimbledon/')
+//     .then(function (res) {
+//         return res.text();
+//     }).then(function (body) {
+//         console.log(body);
+//     });

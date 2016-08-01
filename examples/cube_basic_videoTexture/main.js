@@ -9,6 +9,11 @@ var THIS_FOLDER_PATH = ".";
 /*
 GLOBAL VARIABLES
 */
+
+// fetch("video.ogv").then(function(r){
+//     r.blob().then(function(r){ console.log(r)})
+// })
+
 var CANVAS,
     GL,
     shaderVertexSource,
@@ -26,20 +31,20 @@ var CANVAS,
 
     },
     mMatrixStack = [],
-        pMatrix,
-        mMatrix,
-        vMatrix,
-        lastTime = 0,
-        isDragging = false,
-        mousePosition = { x: 0, y: 0 },
-        animationFrameID = -1,
-        THETA = 0,
-        PHI = 0,
-        AMORTIZATION = 0.95,
-        DELTA = { x: 0, y: 0 },
-        image,
-        texture,
-        video = document.getElementById("bunny_video");
+    pMatrix,
+    mMatrix,
+    vMatrix,
+    lastTime = 0,
+    isDragging = false,
+    mousePosition = { x: 0, y: 0 },
+    animationFrameID = -1,
+    THETA = 0,
+    PHI = 0,
+    AMORTIZATION = 0.95,
+    DELTA = { x: 0, y: 0 },
+    image,
+    texture,
+    video = document.getElementById("bunny_video");
 
 ;
 
@@ -68,12 +73,15 @@ function start() {
 
 
     initGL();
-    image = loadTexture(THIS_FOLDER_PATH+"/bttf.jpg");
-    initProgram();
-    GL.uniform1i(program.uSampler, 0);
-    createWorld();
-    Lib.translateZ4(vMatrix, -6);
-    drawScene();
+    loadTexture(THIS_FOLDER_PATH + "/bttf.jpg").then(function (img) {
+        image = img;
+        initProgram();
+        GL.uniform1i(program.uSampler, 0);
+        createWorld();
+        Lib.translateZ4(vMatrix, -6);
+        drawScene();
+    })
+
 };
 
 var previousTime = 0;
@@ -106,7 +114,7 @@ function drawScene(time) {
         refreshTexture();
         previousTime = video.currentTime;
     }
-    
+
 
     cube.draw(GL, program);
 
@@ -172,14 +180,14 @@ function initProgram() {
 function loadShaders(callback) {
     console.log("loading shaders...");
     var countShaders = 0; //will be kept cause it'll be closure
-    Utils.loadFile(THIS_FOLDER_PATH+"/vertex.shader", function (xmlhttp) {
+    Utils.loadFile(THIS_FOLDER_PATH + "/vertex.shader", function (xmlhttp) {
         shaderVertexSource = xmlhttp.responseText;
         countShaders += 1; //closure created
         if (countShaders == 2) {
             callback();
         }
     });
-    Utils.loadFile(THIS_FOLDER_PATH+"/fragment.shader", function (xmlhttp) {
+    Utils.loadFile(THIS_FOLDER_PATH + "/fragment.shader", function (xmlhttp) {
         shaderFragmentSource = xmlhttp.responseText;
         countShaders += 1;
         if (countShaders == 2) {
@@ -190,25 +198,30 @@ function loadShaders(callback) {
 
 
 function loadTexture(url) {
+    return new Promise(function (resolve, reject) {
+        var image = new Image();
 
-    var image = new Image();
+        image.src = url;
+        image.webglTexture = null;
+        image.onload = function (e) {
+            texture = GL.createTexture();
+            GL.activeTexture(GL.TEXTURE0);
+            GL.pixelStorei(GL.UNPACK_FLIP_Y_WEBGL, true);
+            GL.bindTexture(GL.TEXTURE_2D, texture);
+            GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, image);
+            GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
+            GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
 
-    image.src = url;
-    image.webglTexture = null;
-    image.onload = function (e) {
-        texture = GL.createTexture();
-        GL.pixelStorei(GL.UNPACK_FLIP_Y_WEBGL, true);
-        GL.bindTexture(GL.TEXTURE_2D, texture);
-       
-        GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
-        GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
+            GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
+            GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
+            GL.generateMipmap(GL.TEXTURE_2D);
+            image.webglTexture = texture;
+            resolve(image);
 
-        GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
-        GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
-        //GL.generateMipmap(GL.TEXTURE_2D);
-        image.webglTexture = texture;
-    }
-    return image;
+
+        }
+    })
+
 }
 
 
@@ -234,8 +247,8 @@ function mouseMove(e) {
     }
 
     DELTA.x = (e.clientX - mousePosition.x) * 2 * Math.PI / CANVAS.width / 2,
-    DELTA.y = (e.clientY - mousePosition.y) * 2 * Math.PI / CANVAS.height / 2
-    ;
+        DELTA.y = (e.clientY - mousePosition.y) * 2 * Math.PI / CANVAS.height / 2
+        ;
 
     THETA += DELTA.x;
     PHI += DELTA.y;

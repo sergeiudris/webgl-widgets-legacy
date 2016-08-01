@@ -97,7 +97,7 @@
         checkBoxLighting.checked = false;
         checkBoxBlending.checked = false;
         checkBoxPerFragment.checked = false;
-        checkBoxTextures.checked = false;
+        checkBoxTextures.checked = true;
         alpha.value = "1",
 		ambientR.value = "0.3";
         ambientG.value = "0.3";

@@ -9,40 +9,40 @@
 
     var THIS_FOLDER_PATH = ".";
     var canvas,
-		gl = null,
-		mvMatrix = mat4.create(),
-		mvMatrixStack = [],
-		pMatrix = mat4.create(),
-		shaderProgram,
+        gl = null,
+        mvMatrix = mat4.create(),
+        mvMatrixStack = [],
+        pMatrix = mat4.create(),
+        shaderProgram,
 
-		moonVertexPositionBuffer,
-		moonVertexIndexBuffer,
-		moonVertexTextureCoordBuffer,
-		moonVertexNormalBuffer,
-		rotationDegreesPyramid = 0,// bad practice
-		rotationDegreesCube = 0, // bad practice,
-		lastTime = 0,
-		animationFrameID = -1,
-		neheTexture,
-		xRotation = 0,
-		xSpeed = 0,
-		yRotation = 0,
-		ySpeed = 0,
-		zRotation = 0,
-		z = -8.0,
-		filter = 0, // int varying from 0 to 2 whic filter is used (x,y,z),
-		texturesArr = [],
-		currentlyPressedKeys = {},
-		checkBoxLighting = document.getElementById("lighting"),
-		checkBoxBlending = document.getElementById("blending"),
-		alpha = document.getElementById("alpha"),
-		ambientR = document.getElementById("ambientR"),
+        moonVertexPositionBuffer,
+        moonVertexIndexBuffer,
+        moonVertexTextureCoordBuffer,
+        moonVertexNormalBuffer,
+        rotationDegreesPyramid = 0,// bad practice
+        rotationDegreesCube = 0, // bad practice,
+        lastTime = 0,
+        animationFrameID = -1,
+        neheTexture,
+        xRotation = 0,
+        xSpeed = 0,
+        yRotation = 0,
+        ySpeed = 0,
+        zRotation = 0,
+        z = -8.0,
+        filter = 0, // int varying from 0 to 2 whic filter is used (x,y,z),
+        texturesArr = [],
+        currentlyPressedKeys = {},
+        checkBoxLighting = document.getElementById("lighting"),
+        checkBoxBlending = document.getElementById("blending"),
+        alpha = document.getElementById("alpha"),
+        ambientR = document.getElementById("ambientR"),
         ambientG = document.getElementById("ambientG"),
         ambientB = document.getElementById("ambientB"),
-		lightDirectionX = document.getElementById("lightDirectionX"),
+        lightDirectionX = document.getElementById("lightDirectionX"),
         lightDirectionY = document.getElementById("lightDirectionY"),
         lightDirectionZ = document.getElementById("lightDirectionZ"),
-		directionalR = document.getElementById("directionalR"),
+        directionalR = document.getElementById("directionalR"),
         directionalG = document.getElementById("directionalG"),
         directionalB = document.getElementById("directionalB"),
 
@@ -53,7 +53,7 @@
         lastMouseY = null
 
 
-    ;
+        ;
 
 
 
@@ -70,8 +70,8 @@
         initBuffers();
         initTexture();
         mat4.identity(moonRotationMatrix);
-        
-        
+
+
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.enable(gl.DEPTH_TEST);
 
@@ -81,10 +81,10 @@
         checkBoxLighting.checked = false;
         checkBoxBlending.checked = false;
         alpha.value = "1",
-		ambientR.value = "0.3";
+            ambientR.value = "0.3";
         ambientG.value = "0.3";
         ambientB.value = "0.3",
-		lightDirectionX.value = "3.0";
+            lightDirectionX.value = "3.0";
         lightDirectionY.value = "0.0";
         lightDirectionZ.value = "0.0";
         directionalR.value = "0.8";
@@ -111,26 +111,27 @@
             //source factor, destination factor
             gl.enable(gl.BLEND);
             gl.disable(gl.DEPTH_TEST);
-            gl.uniform1f(shaderProgram.alphaUniform, parseFloat(alpha.value));
         } else {
             gl.disable(gl.BLEND);
             gl.enable(gl.DEPTH_TEST);
         }
+        gl.uniform1f(shaderProgram.alphaUniform, parseFloat(alpha.value));
+
 
         var lighting = checkBoxLighting.checked;
         gl.uniform1i(shaderProgram.useLightingUniform, lighting);
         if (lighting) {
             gl.uniform3f(
-              shaderProgram.ambientColorUniform,
-              parseFloat(ambientR.value),
-              parseFloat(ambientG.value),
-              parseFloat(ambientB.value)
-              );
+                shaderProgram.ambientColorUniform,
+                parseFloat(ambientR.value),
+                parseFloat(ambientG.value),
+                parseFloat(ambientB.value)
+            );
 
             var lightingDirection = [
-            parseFloat(lightDirectionX.value),
-            parseFloat(lightDirectionY.value),
-            parseFloat(lightDirectionZ.value)
+                parseFloat(lightDirectionX.value),
+                parseFloat(lightDirectionY.value),
+                parseFloat(lightDirectionZ.value)
             ];
             var adjustedLD = vec3.create();
             vec3.normalize(lightingDirection, adjustedLD);
@@ -138,17 +139,17 @@
             gl.uniform3fv(shaderProgram.lightingDirectionUniform, adjustedLD);
 
             gl.uniform3f(
-         shaderProgram.directionalColorUniform,
-         parseFloat(directionalR.value),
-         parseFloat(directionalG.value),
-         parseFloat(directionalB.value)
-       );
+                shaderProgram.directionalColorUniform,
+                parseFloat(directionalR.value),
+                parseFloat(directionalG.value),
+                parseFloat(directionalB.value)
+            );
 
         }
 
 
         mat4.identity(mvMatrix); //model-view matrix to represent the current move-rotate state
-        
+
         mat4.translate(mvMatrix, [0.0, 0.0, z]); // multiple the given matrix with the paramter matrix
 
         mat4.multiply(mvMatrix, moonRotationMatrix);
@@ -179,7 +180,7 @@
 
 
 
-        
+
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, moonVertexIndexBuffer);
         setMatrixUniforms();// push over the mv and p matrices to take inot account last changes
@@ -196,8 +197,8 @@
 
     function initTexture() {
         var image = new Image(),
-		texture
-        ;
+            texture
+            ;
         for (var i = 0, l = 3; i < l; i++) {
             texture = gl.createTexture();
             texture.image = image;
@@ -206,7 +207,7 @@
         image.onload = function () {
             handleLoadedTexture(texturesArr);
         }
-        image.src =THIS_FOLDER_PATH+ "/venus2.jpg";
+        image.src = THIS_FOLDER_PATH + "/venus2.jpg";
 
     }
     function handleLoadedTexture(textures) {
@@ -277,7 +278,7 @@
 
     function initShaders() {
         var fragmentShader = getShader(gl, "shader-fsTexture"),
-			vertexShader = getShader(gl, "shader-vsTexture");
+            vertexShader = getShader(gl, "shader-vsTexture");
 
         shaderProgram = gl.createProgram();
         gl.attachShader(shaderProgram, vertexShader);
@@ -312,10 +313,10 @@
 
     function getShader(gl, id) {
         var shaderScript = document.getElementById(id),
-			str = "",
-			k,
-			shader
-        ;
+            str = "",
+            k,
+            shader
+            ;
 
         if (!shaderScript) {
             return null;
@@ -402,7 +403,7 @@
             }
 
         }
-      
+
         for (var latNumber = 0; latNumber < latitudeBands; latNumber++) {
             for (var longNumber = 0; longNumber < longitudeBands; longNumber++) {
                 var first = (latNumber * (longitudeBands + 1)) + longNumber;
@@ -439,7 +440,7 @@
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexData), gl.STATIC_DRAW);
         moonVertexIndexBuffer.itemSize = 1;
         moonVertexIndexBuffer.numItems = indexData.length;
-        
+
 
     }
 
@@ -481,20 +482,21 @@
 
     function addEventListeners(target) {
         target.addEventListener("dblclick",
-		function (e) {
+            function (e) {
 
-		    if (animationFrameID != -1) {
-		        console.log("cancel")
-		        cancelAnimationFrame(animationFrameID);
-		        animationFrameID = -1;
-		        lastTime = 0;
-		    } else {7
-		        console.log("request")
-		        animationFrameID = requestAnimationFrame(tick);
-		    }
-		    console.log(animationFrameID);
-		},
-		false);
+                if (animationFrameID != -1) {
+                    console.log("cancel")
+                    cancelAnimationFrame(animationFrameID);
+                    animationFrameID = -1;
+                    lastTime = 0;
+                } else {
+                    7
+                    console.log("request")
+                    animationFrameID = requestAnimationFrame(tick);
+                }
+                console.log(animationFrameID);
+            },
+            false);
 
         target.addEventListener("mousedown", handleMouseDown, false);
         document.addEventListener("mouseup", handleMouseUp, false);
@@ -522,18 +524,18 @@
     }
 
     function handleMouseDown(event) {
-       
+
         mouseDown = true;
         lastMouseX = event.clientX;
         lastMouseY = event.clientY;
-    } 
+    }
 
 
     function handleMouseUp(event) {
         mouseDown = false;
     }
     function handleMouseMove(event) {
-       
+
         if (!mouseDown) {
             return;
         }

@@ -71,7 +71,7 @@ function main() {
 function start() {
     try{
         console.log("entered start");
-        document.getElementById("fs").value += "entered start";
+        //document.getElementById("fs").value += "entered start";
 
         CANVAS = document.getElementById("canvas");
 
@@ -100,7 +100,8 @@ function start() {
 
         drawScene();
     } catch (e) {
-        document.getElementById("fs").value +=  (e.message);
+        console.log(e);
+       // document.getElementById("fs").value +=  (e.message);
     }
 };
 
@@ -376,9 +377,9 @@ function mouseMove(e) {
 
 
         }
-    document.getElementById("vs").value = "x: " + mouseX+ ", y: " + mouseY;
+   // document.getElementById("vs").value = "x: " + mouseX+ ", y: " + mouseY;
    
-    document.getElementById("fs").value = SPHEREINTERSECTED;
+    //document.getElementById("fs").value = SPHEREINTERSECTED;
     if (!isDragging) {
         //launch ray
 

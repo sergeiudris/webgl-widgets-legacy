@@ -57,7 +57,6 @@ Tetrahedron.prototype = {
         that.positionBuffer.numItems = that.vertices.length / that.positionBuffer.itemSize;
         gl.bindBuffer(gl.ARRAY_BUFFER, that.positionBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array( that.vertices), gl.STATIC_DRAW);
-        console.log(that.positionBuffer);
 
         that.colorBuffer = gl.createBuffer();
         that.colorBuffer.itemSize = 3;
@@ -75,7 +74,6 @@ Tetrahedron.prototype = {
 
     },
     draw: function (gl, prog,numItems, offset,again) {
-        console.log(numItems, offset);
         var that = Tetrahedron.prototype;
         if (!again) {
             gl.bindBuffer(gl.ARRAY_BUFFER, that.positionBuffer);

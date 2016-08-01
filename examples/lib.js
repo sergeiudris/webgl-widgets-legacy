@@ -191,18 +191,21 @@ var Utils = {
         xmlhttp.send();
     },
     loadTexture: function (url, callback, callbackToLauchApp, activeTexture) {
+
+        
         var img = new Image();
 
         img.src = url;
         img.webglTexture = null;
         img.onload = function (e) {
             var tex = GL.createTexture();
+            GL.activeTexture(GL.TEXTURE0)
             GL.bindTexture(GL.TEXTURE_2D, tex);
 
             GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
             GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST_MIPMAP_LINEAR);
-            GL.generateMipmap(GL.TEXTURE_2D);
             GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, img);
+            GL.generateMipmap(GL.TEXTURE_2D);
             img.webglTexture = tex;
             callback();
             callbackToLauchApp();
