@@ -6,7 +6,7 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 var express = require('express');
-var port = 2000;
+var port = 3000;
 var app = express();
 var fs = require('fs');
 var path = require('path');
@@ -26,9 +26,6 @@ html = html.join('');
 
 app.use(express.static(__dirname));
 
-app.get('/', function (req, res, next) {
-    res.send(html);
-});
 
 app.listen(port, function () {
     console.log('>app is running on port ' + port + '\n>type   http://127.0.0.1:' + port + '   in your browser to use the application\n>to stop the server: press  ctrl + c');

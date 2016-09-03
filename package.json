@@ -1,9 +1,9 @@
 {
-  "name": "webgl widgets legacy",
-  "version": "1.0",
+  "name": "webgl-widgets-legacy",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node run server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "express": "^1.0.0"
