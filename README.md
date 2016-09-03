@@ -4,6 +4,8 @@ WebGL (3D HTML5-canvas) widgets.
 
 [**See live demo**]( https://serge-joggen.github.io/webgl-widgets-legacy/)
 
+![Alt text](/snapshot.png?raw=true "snapshot.png")
+
 ## Credits
 
 All the credit goes to:
