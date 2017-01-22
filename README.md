@@ -2,7 +2,7 @@
 
 WebGL (3D HTML5-canvas) widgets.
 
-[**See live demo**]( https://serge-joggen.github.io/webgl-widgets-legacy/)
+[**See live demo**]( https://mvstory.github.io/webgl-widgets-legacy/)
 
 ![Alt text](/snapshot.png?raw=true "snapshot.png")
 
@@ -16,24 +16,24 @@ All the credit goes to:
 
 
 ### Favorites
- * [Glass cube](https://serge-joggen.github.io/webgl-widgets-legacy/examples/cube_basic_keyboard/) 
- 
-    use arrow keys to rotate, PgUp,PgDw to zoom, turn `blending` on/off
- * [Video cube](https://serge-joggen.github.io/webgl-widgets-legacy/examples/cube_basic_videoTexture/)
- * [Dragon](https://serge-joggen.github.io/webgl-widgets-legacy/examples/dragon_wireframeC/)
- * [Glass video spheres](https://serge-joggen.github.io/webgl-widgets-legacy/examples/glass_spheres/)
- * [Laptop](https://serge-joggen.github.io/webgl-widgets-legacy/examples/laptop/)
- * [...]( https://serge-joggen.github.io/webgl-widgets-legacy/)
+ * [Glass cube](https://mvstory.github.io/webgl-widgets-legacy/examples/cube_basic_keyboard/)
 
- 
+    use arrow keys to rotate, PgUp,PgDw to zoom, turn `blending` on/off
+ * [Video cube](https://mvstory.github.io/webgl-widgets-legacy/examples/cube_basic_videoTexture/)
+ * [Dragon](https://mvstory.github.io/webgl-widgets-legacy/examples/dragon_wireframeC/)
+ * [Glass video spheres](https://mvstory.github.io/webgl-widgets-legacy/examples/glass_spheres/)
+ * [Laptop](https://mvstory.github.io/webgl-widgets-legacy/examples/laptop/)
+ * [...]( https://mvstory.github.io/webgl-widgets-legacy/)
+
+
 ### Run
 
-**1**. Make sure [NodeJS](https://nodejs.org/) is installed 
+**1**. Make sure [NodeJS](https://nodejs.org/) is installed
 
 
-**2**. Clone this repository if you have [Git](https://git-scm.com/) (or [download](https://github.com/serge-joggen/webgl-widgets-legacy/archive/master.zip) it )
+**2**. Clone this repository if you have [Git](https://git-scm.com/) (or [download](https://github.com/mvstory/webgl-widgets-legacy/archive/master.zip) it )
 ```shell
- $ git clone https://github.com/serge-joggen/webgl-widgets-legacy.git
+ $ git clone https://github.com/mvstory/webgl-widgets-legacy.git
 ```
 **3**. Open command prompt, navigate to project directory
 ```shell
@@ -50,4 +50,4 @@ All the credit goes to:
 
 ### License
 
-Copyright © 2016 serge-joggen This source code is licensed under the MIT license found in the LICENSE.txt file.
+Copyright © 2016 mvstory This source code is licensed under the MIT license found in the LICENSE.txt file.
