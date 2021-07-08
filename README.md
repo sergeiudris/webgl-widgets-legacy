@@ -1,5 +1,7 @@
 ## [legacy code] Webgl widgets
 
+[archived]
+
 WebGL (3D HTML5-canvas) widgets.
 
 [**See live demo**]( https://sergeiudris.github.io/webgl-widgets-legacy/)
