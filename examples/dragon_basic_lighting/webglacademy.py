@@ -1,7 +1,6 @@
 
 bl_info = {
   "name": "MY FIRST BLENDER SCRIPT",
-  "author": "Xavier Bourry",
   "blender": (2, 7, 6),
   "api": 35624,
   "location": "File > Import-Export",
