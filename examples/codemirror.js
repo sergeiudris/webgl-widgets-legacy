@@ -1,10 +1,4 @@
-/**
- * Webgl widgets legacy code (http://serge-joggen.github.io/webgl-widgets-legacy)
- *
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
+
 // All functions that need access to the editor's state live inside
 // the CodeMirror function. Below that, at the bottom of the file,
 // some utilities are defined.
