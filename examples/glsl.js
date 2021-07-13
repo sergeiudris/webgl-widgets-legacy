@@ -1,4 +1,10 @@
-
+/**
+ * Webgl widgets legacy code (http://serge-joggen.github.io/webgl-widgets-legacy)
+ *
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.txt file in the root directory of this source tree.
+ */
 CodeMirror.defineMode("glsl", function(config, parserConfig) {
   var indentUnit = config.indentUnit,
       keywords = parserConfig.keywords || {},
