@@ -1,8 +1,8 @@
-## Webgl widgets
+## [legacy code] Webgl widgets
 
 WebGL (3D HTML5-canvas) widgets.
 
-[**See live demo**]( https://sergeiudris.github.io/webgl-widgets/)
+[**See live demo**]( https://sergeiudris.github.io/webgl-widgets-legacy/)
 
 ![Alt text](/snapshot.png?raw=true "snapshot.png")
 
@@ -16,14 +16,14 @@ All the credit goes to:
 
 
 ### Favorites
- * [Glass cube](https://sergeiudris.github.io/webgl-widgets/examples/cube_basic_keyboard/)
+ * [Glass cube](https://sergeiudris.github.io/webgl-widgets-legacy/examples/cube_basic_keyboard/)
 
     use arrow keys to rotate, PgUp,PgDw to zoom, turn `blending` on/off
- * [Video cube](https://sergeiudris.github.io/webgl-widgets/examples/cube_basic_videoTexture/)
- * [Dragon](https://sergeiudris.github.io/webgl-widgets/examples/dragon_wireframeC/)
- * [Glass video spheres](https://sergeiudris.github.io/webgl-widgets/examples/glass_spheres/)
- * [Laptop](https://sergeiudris.github.io/webgl-widgets/examples/laptop/)
- * [...]( https://sergeiudris.github.io/webgl-widgets/)
+ * [Video cube](https://sergeiudris.github.io/webgl-widgets-legacy/examples/cube_basic_videoTexture/)
+ * [Dragon](https://sergeiudris.github.io/webgl-widgets-legacy/examples/dragon_wireframeC/)
+ * [Glass video spheres](https://sergeiudris.github.io/webgl-widgets-legacy/examples/glass_spheres/)
+ * [Laptop](https://sergeiudris.github.io/webgl-widgets-legacy/examples/laptop/)
+ * [...]( https://sergeiudris.github.io/webgl-widgets-legacy/)
 
 
 ### Run
@@ -31,9 +31,9 @@ All the credit goes to:
 **1**. Make sure [NodeJS](https://nodejs.org/) is installed
 
 
-**2**. Clone this repository if you have [Git](https://git-scm.com/) (or [download](https://github.com/sergeiudris/webgl-widgets/archive/master.zip) it )
+**2**. Clone this repository if you have [Git](https://git-scm.com/) (or [download](https://github.com/sergeiudris/webgl-widgets-legacy/archive/master.zip) it )
 ```shell
- $ git clone https://github.com/sergeiudris/webgl-widgets.git
+ $ git clone https://github.com/sergeiudris/webgl-widgets-legacy.git
 ```
 **3**. Open command prompt, navigate to project directory
 ```shell
