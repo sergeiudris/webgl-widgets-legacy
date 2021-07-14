@@ -1,3 +1,10 @@
+/**
+ * Webgl widgets legacy code (http://serge-joggen.github.io/webgl-widgets-legacy)
+ *
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.txt file in the root directory of this source tree.
+ */
 var express = require('express');
 var port = 3000;
 var app = express();
