@@ -1,10 +1,4 @@
-/**
- * Webgl widgets legacy code (http://serge-joggen.github.io/webgl-widgets-legacy)
- *
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
+
 /*
     http://www.JSON.org/json2.js
     2009-09-29
